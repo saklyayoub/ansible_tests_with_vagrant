@@ -1,0 +1,20 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+Vagrant.configure("2") do |config|
+  config.vm.box = "bento/ubuntu-16.04"
+  config.vm.hostname = "serv"
+  config.vm.box_check_update = false
+  config.vm.network "private_network", ip: "192.168.255.150"
+  config.vm.synced_folder "./vagrant", "/home/vagrant"
+  config.vm.provider "vmware_desktop" do |v|
+    v.vmx["memsize"] = "2048"
+    v.vmx["numvcpus"] = "1"
+  end
+  config.vm.provision "shell", inline: <<-SHELL
+    apt update -y
+    apt install software-properties-common -y
+    apt-add-repository ppa:ansible/ansible -y
+    apt update -y
+    apt install ansible -y
+  SHELL
+end
